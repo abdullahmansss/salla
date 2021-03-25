@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:salla/modules/on_boarding/on_boarding_screen.dart';
 import 'package:salla/shared/app_cubit/cubit.dart';
 import 'package:salla/shared/components/components.dart';
+import 'package:salla/shared/components/constants.dart';
 import 'package:salla/shared/styles/colors.dart';
 import 'package:salla/shared/styles/styles.dart';
 
@@ -60,19 +61,36 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: defaultButton(
-              function: ()
-              {
+              function: () {
                 int selectedIndex = AppCubit.get(context).selectedLanguageIndex;
-                if(selectedIndex == null)
+                if (selectedIndex == null)
                 {
                   showToast(
                     text: 'please select a language then press done',
                     color: ToastColors.WARNING,
                   );
-                } else
-                {
+                } else {
                   var model = languageList[selectedIndex];
-                  navigateAndFinish(context, OnBoardScreen(),);
+                  print(model.code);
+
+                  setAppLanguageToShared(model.code)
+                      .then((value)
+                  {
+                    getTranslationFile(model.code).then((value)
+                    {
+                      AppCubit.get(context).setLanguage(
+                        translationFile: value,
+                        code: model.code,
+                      ).then((value)
+                      {
+                        navigateAndFinish(
+                          context,
+                          OnBoardScreen(),
+                        );
+                      });
+                    }).catchError((error) {});
+                  })
+                      .catchError((error) {});
                 }
               },
               text: 'done',

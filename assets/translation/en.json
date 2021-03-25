@@ -1,3 +1,23 @@
 {
-
+  "title1": "Title 11",
+  "title2": "Title 22",
+  "title3": "Title 33",
+  "body1": "Body 11",
+  "body2": "Body 22",
+  "body3": "Body 33",
+  "loginTitle": "Sign In",
+  "loginSubTitle": "Please Sign In To Enjoy Our New Deals",
+  "email": "Email Address",
+  "emailValidation": "email address must not be empty",
+  "password": "Password",
+  "passwordValidation": "password must not be empty",
+  "login": "login",
+  "donNotHave": "Don't Have An Account?",
+  "registerNow": "Register Now",
+  "home": "Home",
+  "categories": "Categories",
+  "cart": "Cart",
+  "settings": "Settings",
+  "salla": "Salla",
+  "search": "Search Product"
 }
