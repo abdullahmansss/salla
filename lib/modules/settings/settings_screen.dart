@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:salla/shared/app_cubit/cubit.dart';
+import 'package:salla/shared/components/components.dart';
+import 'package:salla/shared/components/constants.dart';
 
-class SettingsScreen extends StatelessWidget
-{
+class SettingsScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext context)
-  {
-    return Text(
-      'Settings Screen',
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      onPressed: ()
+      {
+        setAppLanguageToShared('ar')
+            .then((value)
+        {
+          getTranslationFile('ar').then((value)
+          {
+            AppCubit.get(context).setLanguage(
+              translationFile: value,
+              code: 'ar',
+            ).then((value)
+            {
+
+            });
+          }).catchError((error) {});
+        })
+            .catchError((error) {});
+      },
+      child: Text(
+        'change',
+      ),
     );
   }
 }

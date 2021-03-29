@@ -21,6 +21,11 @@ class AppLanguageModel
   String settings;
   String salla;
   String search;
+  String discount;
+  String currency;
+  String browse;
+  String new_arrivals;
+  String see;
 
   AppLanguageModel({
     this.title1,
@@ -44,6 +49,11 @@ class AppLanguageModel
     this.settings,
     this.salla,
     this.search,
+    this.discount,
+    this.currency,
+    this.browse,
+    this.new_arrivals,
+    this.see,
   });
 
   AppLanguageModel.fromJson(Map<String, dynamic> json)
@@ -69,6 +79,11 @@ class AppLanguageModel
     settings = json['settings'];
     salla = json['salla'];
     search = json['search'];
+    discount = json['discount'];
+    currency = json['currency'];
+    browse = json['browse'];
+    new_arrivals = json['new_arrivals'];
+    see = json['see'];
   }
 
   /*Map<String, dynamic> toJson() {

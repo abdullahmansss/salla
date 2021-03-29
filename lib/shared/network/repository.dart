@@ -16,6 +16,18 @@ abstract class Repository {
     @required String token,
   });
 
+  Future<Response> getCategories();
+
+  Future<Response> addOrRemoveFavourite({
+    @required String token,
+    @required int id,
+  });
+
+  Future<Response> addOrRemoveCart({
+    @required String token,
+    @required int id,
+  });
+
 // Future<Either<String, UserModel>> userLogin({
 //   @required String email,
 //   @required String password,
@@ -56,6 +68,36 @@ class RepoImplementation extends Repository {
   }
 
   @override
+  Future<Response> addOrRemoveFavourite({
+    String token,
+    int id,
+  }) async {
+    return await dioHelper.postData(
+      url: ADD_FAVOURITE,
+      token: token,
+      data:
+      {
+        'product_id':id,
+      },
+    );
+  }
+
+  @override
+  Future<Response> addOrRemoveCart({
+    String token,
+    int id,
+  }) async {
+    return await dioHelper.postData(
+      url: ADD_CART,
+      token: token,
+      data:
+      {
+        'product_id':id,
+      },
+    );
+  }
+
+  @override
   Future<Response> getHomeData({
     String token,
   }) async
@@ -63,6 +105,14 @@ class RepoImplementation extends Repository {
     return await dioHelper.getData(
       url: HOME_DATA,
       token: token,
+    );
+  }
+
+  @override
+  Future<Response> getCategories() async
+  {
+    return await dioHelper.getData(
+      url: GET_CATEGORIES,
     );
   }
 

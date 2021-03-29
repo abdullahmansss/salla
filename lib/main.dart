@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget
           create: (context) => di<AppCubit>()..setLanguage(
             translationFile: translationFile,
             code: code,
-          )..getHomeData(),
+          )..getHomeData()..getCategories(),
         ),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
@@ -76,6 +76,7 @@ class MyApp extends StatelessWidget
             theme: ThemeData(
               fontFamily: 'Jannah',
               primarySwatch: Colors.blue,
+              scaffoldBackgroundColor: Colors.white,
             ),
             home: Directionality(
               textDirection: AppCubit.get(context).appDirection,

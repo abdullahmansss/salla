@@ -69,7 +69,8 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                     text: 'please select a language then press done',
                     color: ToastColors.WARNING,
                   );
-                } else {
+                } else
+                  {
                   var model = languageList[selectedIndex];
                   print(model.code);
 

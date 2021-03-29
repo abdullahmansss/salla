@@ -4,6 +4,44 @@ abstract class AppStates {}
 
 class AppInitialState extends AppStates {}
 
+class AppLoadingState extends AppStates {}
+
+class AppChangeFavLoadingState extends AppStates {}
+
+class AppChangeFavSuccessState extends AppStates {}
+
+class AppChangeFavErrorState extends AppStates
+{
+  final String error;
+
+  AppChangeFavErrorState(this.error);
+}
+
+class AppChangeCartLocalState extends AppStates {}
+
+class AppChangeCartLoadingState extends AppStates {}
+
+class AppChangeCartSuccessState extends AppStates {}
+
+class AppChangeCartErrorState extends AppStates
+{
+  final String error;
+
+  AppChangeCartErrorState(this.error);
+}
+
+
+class AppCategoriesLoadingState extends AppStates {}
+
+class AppCategoriesSuccessState extends AppStates {}
+
+class AppCategoriesErrorState extends AppStates
+{
+  final String error;
+
+  AppCategoriesErrorState(this.error);
+}
+
 class AppSelectLanguageState extends AppStates {}
 
 class AppChangeBottomIndexState extends AppStates {}

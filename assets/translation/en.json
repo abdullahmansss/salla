@@ -19,5 +19,10 @@
   "cart": "Cart",
   "settings": "Settings",
   "salla": "Salla",
-  "search": "Search Product"
+  "search": "Search Product",
+  "discount": "DISCOUNT",
+  "currency": "SAR",
+  "browse": "Browse Categories",
+  "new_arrivals": "New Arrivals",
+  "see": "see all"
 }

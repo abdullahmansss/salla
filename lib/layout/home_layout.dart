@@ -4,6 +4,7 @@ import 'package:salla/shared/app_cubit/cubit.dart';
 import 'package:salla/shared/app_cubit/states.dart';
 import 'package:salla/shared/components/constants.dart';
 import 'package:salla/shared/styles/icon_broken.dart';
+import 'package:salla/shared/styles/styles.dart';
 
 class HomeLayout extends StatelessWidget
 {
@@ -87,8 +88,25 @@ class HomeLayout extends StatelessWidget
                 label: appLang(context).categories,
               ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  IconBroken.Bag,
+                icon: Stack(
+                  alignment: AlignmentDirectional.topEnd,
+                  children: [
+                    Icon(
+                      IconBroken.Bag,
+                    ),
+                    if(state is! AppLoadingState && AppCubit.get(context).cartProductsNumber != 0)
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      padding: EdgeInsets.all(3.0,),
+                      child: Text(
+                        AppCubit.get(context).cartProductsNumber >= 9 ? '9' : AppCubit.get(context).cartProductsNumber.toString(),
+                        style: white10bold(),
+                      ),
+                    ),
+                  ],
                 ),
                 label: appLang(context).cart,
               ),
