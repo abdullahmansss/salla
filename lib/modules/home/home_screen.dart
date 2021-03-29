@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
         var categories = AppCubit.get(context).categoriesModel;
 
         return ConditionalBuilder(
-          condition: state is AppSuccessState,
+          condition: state is! AppLoadingState,
           builder: (context) => SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
