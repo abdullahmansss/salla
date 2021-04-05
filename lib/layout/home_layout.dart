@@ -32,12 +32,13 @@ class HomeLayout extends StatelessWidget
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                          5.0,
+                          2.0,
                         ),
                         color: Colors.white,
                       ),
                       padding: EdgeInsets.symmetric(
                         horizontal: 15.0,
+                        vertical: 4.0,
                       ),
                       child: Row(
                         children: [

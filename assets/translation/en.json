@@ -24,5 +24,7 @@
   "currency": "SAR",
   "browse": "Browse Categories",
   "new_arrivals": "New Arrivals",
-  "see": "see all"
+  "see": "see all",
+  "total": "Total",
+  "proceed": "Proceed to Checkout"
 }

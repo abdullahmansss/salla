@@ -26,6 +26,8 @@ class AppLanguageModel
   String browse;
   String new_arrivals;
   String see;
+  String total;
+  String proceed;
 
   AppLanguageModel({
     this.title1,
@@ -54,6 +56,8 @@ class AppLanguageModel
     this.browse,
     this.new_arrivals,
     this.see,
+    this.total,
+    this.proceed,
   });
 
   AppLanguageModel.fromJson(Map<String, dynamic> json)
@@ -84,6 +88,8 @@ class AppLanguageModel
     browse = json['browse'];
     new_arrivals = json['new_arrivals'];
     see = json['see'];
+    total = json['total'];
+    proceed = json['proceed'];
   }
 
   /*Map<String, dynamic> toJson() {

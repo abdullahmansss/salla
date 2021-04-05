@@ -1,80 +1,68 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salla/models/cart/cart.dart';
+import 'package:salla/models/home/home_model.dart';
+import 'package:salla/modules/single_category/cubit/cubit.dart';
+import 'package:salla/modules/single_category/cubit/states.dart';
 import 'package:salla/shared/app_cubit/cubit.dart';
 import 'package:salla/shared/app_cubit/states.dart';
-import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constants.dart';
+import 'package:salla/shared/di/di.dart';
 import 'package:salla/shared/styles/colors.dart';
+import 'package:salla/shared/styles/icon_broken.dart';
 import 'package:salla/shared/styles/styles.dart';
 
-class CartScreen extends StatelessWidget {
+class SingleCategoryScreen extends StatelessWidget
+{
+  final int id;
+  final String title;
+
+  SingleCategoryScreen(this.id, this.title);
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        var model = AppCubit.get(context).cartModel;
+    return BlocProvider(
+      create: (BuildContext context) => di<SingleCategoryCubit>()..getCategories(id, context),
+      child: BlocConsumer<SingleCategoryCubit, SingleCategoryStates>(
+        listener: (context, state) {},
+        builder: (context, state)
+        {
+          var model = SingleCategoryCubit.get(context).singleCategoryModel;
 
-        return ConditionalBuilder(
-          condition: model != null,
-          builder: (context) => Column(
-            children:
-            [
-              if (state is AppUpdateCartLoadingState)
-                LinearProgressIndicator(
-                  backgroundColor: Colors.grey[300],
-                ),
-              Expanded(
-                child: ListView.separated(
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) => cartItem(
-                    model: model.data.cartItems[index],
-                    context: context,
-                    index: index,
-                  ),
-                  separatorBuilder: (context, index) => Container(
-                    width: double.infinity,
-                    height: 1.0,
-                    color: Colors.grey[300],
-                  ),
-                  itemCount: model.data.cartItems.length,
-                ),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                title,
               ),
-              Container(
-                width: double.infinity,
-                color: Colors.grey[100],
-                padding: EdgeInsets.all(
-                  10.0,
+            ),
+            body: ConditionalBuilder(
+              condition: model != null,
+              builder: (context) => ListView.separated(
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) => singleProductItem(
+                  model: model.data.data[index],
+                  context: context,
+                  index: index,
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      '${appLang(context).total} : ${model.data.total.round()} ${appLang(context).currency}',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    defaultButton(
-                      function: () {},
-                      text: appLang(context).proceed,
-                    ),
-                  ],
+                separatorBuilder: (context, index) => Container(
+                  width: double.infinity,
+                  height: 1.0,
+                  color: Colors.grey[300],
                 ),
+                itemCount: model.data.data.length,
               ),
-            ],
-          ),
-          fallback: (context) => Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
+              fallback: (context) => Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
-  Widget cartItem({
-    @required CartItems model,
+  Widget singleProductItem({
+    @required Products model,
     @required BuildContext context,
     @required int index,
   }) =>
@@ -97,7 +85,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     image: DecorationImage(
                       image: NetworkImage(
-                        '${model.product.image}',
+                        '${model.image}',
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -109,8 +97,9 @@ class CartScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (model.product.discount != 0)
+                    children:
+                    [
+                      if (model.discount != 0)
                         Padding(
                           padding: const EdgeInsetsDirectional.only(
                             bottom: 10.0,
@@ -127,7 +116,7 @@ class CartScreen extends StatelessWidget {
                           ),
                         ),
                       Text(
-                        model.product.name,
+                        model.name,
                         maxLines: 2,
                         style: TextStyle(
                           height: 1.4,
@@ -146,11 +135,12 @@ class CartScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Column(
-                                  children: [
+                                  children:
+                                  [
                                     Row(
                                       children: [
                                         Text(
-                                          '${model.product.price.round()}',
+                                          '${model.price.round()}',
                                           style: black16bold().copyWith(
                                             height: .5,
                                             color: defaultColor,
@@ -168,15 +158,14 @@ class CartScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    if (model.product.discount != 0)
+                                    if (model.discount != 0)
                                       Row(
                                         children: [
                                           Text(
-                                            '${model.product.oldPrice.round()}',
+                                            '${model.oldPrice.round()}',
                                             style: black12bold().copyWith(
                                               color: Colors.grey,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
+                                              decoration: TextDecoration.lineThrough,
                                             ),
                                           ),
                                           Padding(
@@ -190,60 +179,48 @@ class CartScreen extends StatelessWidget {
                                             ),
                                           ),
                                           Text(
-                                            '${model.product.discount}%',
+                                            '${model.discount}%',
                                             style: black12bold().copyWith(
                                               color: Colors.red,
                                             ),
                                           ),
                                         ],
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                       ),
                                   ],
                                 ),
                               ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      if (model.quantity != 1) {
-                                        AppCubit.get(context).updateCart(
-                                          id: model.id,
-                                          quantity: --model.quantity,
-                                        );
-                                      }
-                                    },
-                                    icon: CircleAvatar(
-                                      child: Icon(
-                                        Icons.remove,
-                                        size: 14.0,
-                                      ),
-                                      radius: 15.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${model.quantity}',
-                                    style: black18bold().copyWith(
-                                      color: defaultColor,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      AppCubit.get(context).updateCart(
-                                        id: model.id,
-                                        quantity: ++model.quantity,
-                                      );
-                                    },
-                                    icon: CircleAvatar(
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 14.0,
-                                      ),
-                                      radius: 15.0,
-                                    ),
-                                  ),
-                                ],
+                              FloatingActionButton(
+                                onPressed: ()
+                                {
+                                  AppCubit.get(context).changeFav(
+                                    id: model.id,
+                                  );
+                                },
+                                heroTag : '2',
+                                backgroundColor:
+                                AppCubit.get(context).favourites[model.id]
+                                    ? Colors.green
+                                    : null,
+                                mini: true,
+                                child: Icon(
+                                  IconBroken.Heart,
+                                ),
+                              ),
+                              FloatingActionButton(
+                                onPressed: () {
+                                  AppCubit.get(context).changeCart(
+                                    id: model.id,
+                                  );
+                                },
+                                heroTag : '1',
+                                backgroundColor: AppCubit.get(context).cart[model.id]
+                                    ? Colors.green
+                                    : null,
+                                mini: true,
+                                child: Icon(
+                                  IconBroken.Buy,
+                                ),
                               ),
                             ],
                           );

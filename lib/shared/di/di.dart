@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:salla/modules/login/cubit/cubit.dart';
+import 'package:salla/modules/single_category/cubit/cubit.dart';
 import 'package:salla/shared/app_cubit/cubit.dart';
 import 'package:salla/shared/network/local/cache_helper.dart';
 import 'package:salla/shared/network/remote/dio_helper.dart';
@@ -44,5 +45,11 @@ Future init() async
         () => LoginCubit(
           di<Repository>(),
         ),
+  );
+
+  di.registerFactory<SingleCategoryCubit>(
+        () => SingleCategoryCubit(
+      di<Repository>(),
+    ),
   );
 }

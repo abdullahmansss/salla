@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/models/add_cart/add_cart_model.dart';
 import 'package:salla/models/add_fav/add_fav_model.dart';
+import 'package:salla/models/cart/cart.dart';
 import 'package:salla/models/categories/categories.dart';
 import 'package:salla/models/home/home_model.dart';
 import 'package:salla/modules/cart/cart_screen.dart';
@@ -15,14 +16,16 @@ import 'package:salla/shared/components/constants.dart';
 import 'package:salla/shared/language/app_language_model.dart';
 import 'package:salla/shared/network/repository.dart';
 
-class AppCubit extends Cubit<AppStates> {
+class AppCubit extends Cubit<AppStates>
+{
   final Repository repository;
 
   AppCubit(this.repository) : super(AppInitialState());
 
   static AppCubit get(context) => BlocProvider.of(context);
 
-  List<bool> selectedLanguage = [
+  List<bool> selectedLanguage =
+  [
     false,
     false,
   ];
@@ -71,8 +74,8 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   HomeModel homeModel;
-  List<bool> favourites = [];
-  List<bool> cart = [];
+  Map<int, bool> favourites = {};
+  Map<int, bool> cart = {};
   int cartProductsNumber = 0;
 
   getHomeData() {
@@ -85,9 +88,14 @@ class AppCubit extends Cubit<AppStates> {
         .then((value) {
       homeModel = HomeModel.fromJson(value.data);
 
-      homeModel.data.products.forEach((element) {
-        favourites.add(element.inFavorites);
-        cart.add(element.inCart);
+      homeModel.data.products.forEach((element)
+      {
+        favourites.addAll({
+          element.id: element.inFavorites
+        });
+        cart.addAll({
+          element.id: element.inCart
+        });
 
         if(element.inCart)
         {
@@ -123,16 +131,35 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  CartModel cartModel;
+
+  getCart()
+  {
+    emit(AppUpdateCartLoadingState());
+
+    repository
+        .getCartData(token: userToken)
+        .then((value)
+    {
+      cartModel = CartModel.fromJson(value.data);
+
+      emit(AppCartSuccessState());
+
+      print('success cart');
+    }).catchError((error) {
+      print('error cart ${error.toString()}');
+      emit(AppCartErrorState(error.toString()));
+    });
+  }
+
   AddFavModel addFavModel;
 
   changeFav({
     @required int id,
-    @required int index,
   }) {
-    print(index);
     print(id);
 
-    favourites[index] = !favourites[index];
+    favourites[id] = !favourites[id];
 
     emit(AppChangeFavLoadingState());
 
@@ -148,13 +175,13 @@ class AppCubit extends Cubit<AppStates> {
 
       if(addFavModel.status == false)
       {
-        favourites[index] = !favourites[index];
+        favourites[id] = !favourites[id];
       }
 
       emit(AppChangeFavSuccessState());
     }).catchError((error)
     {
-      favourites[index] = !favourites[index];
+      favourites[id] = !favourites[id];
       emit(AppChangeFavErrorState(error.toString()));
     });
   }
@@ -163,12 +190,10 @@ class AppCubit extends Cubit<AppStates> {
 
   changeCart({
     @required int id,
-    @required int index,
   }) {
-    print(index);
     print(id);
 
-    changeLocalCart(index);
+    changeLocalCart(id);
 
     emit(AppChangeCartLoadingState());
 
@@ -184,23 +209,48 @@ class AppCubit extends Cubit<AppStates> {
 
       if(addCartModel.status == false)
       {
-        changeLocalCart(index);
+        changeLocalCart(id);
       }
 
       emit(AppChangeCartSuccessState());
+
+      getCart();
     }).catchError((error)
     {
-      changeLocalCart(index);
+      changeLocalCart(id);
 
       emit(AppChangeCartErrorState(error.toString()));
     });
   }
 
-  void changeLocalCart(index)
-  {
-    cart[index] = !cart[index];
+  updateCart({
+    @required int id,
+    @required int quantity,
+  }) {
+    emit(AppUpdateCartLoadingState());
 
-    if(cart[index])
+    repository
+        .updateCart(
+      token: userToken,
+      id: id,
+      quantity: quantity,
+    )
+        .then((value)
+    {
+      print(value.data);
+
+      getCart();
+    }).catchError((error)
+    {
+      emit(AppUpdateCartErrorState(error.toString()));
+    });
+  }
+
+  void changeLocalCart(id)
+  {
+    cart[id] = !cart[id];
+
+    if(cart[id])
     {
       cartProductsNumber++;
     } else

@@ -9,14 +9,14 @@ class SettingsScreen extends StatelessWidget {
     return MaterialButton(
       onPressed: ()
       {
-        setAppLanguageToShared('ar')
+        setAppLanguageToShared('en')
             .then((value)
         {
-          getTranslationFile('ar').then((value)
+          getTranslationFile('en').then((value)
           {
             AppCubit.get(context).setLanguage(
               translationFile: value,
-              code: 'ar',
+              code: 'en',
             ).then((value)
             {
 

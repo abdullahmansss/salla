@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/models/categories/categories.dart';
 import 'package:salla/models/home/home_model.dart';
+import 'package:salla/modules/single_category/single_category_screen.dart';
 import 'package:salla/shared/app_cubit/cubit.dart';
 import 'package:salla/shared/app_cubit/states.dart';
+import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constants.dart';
 import 'package:salla/shared/styles/colors.dart';
 import 'package:salla/shared/styles/icon_broken.dart';
@@ -23,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         var categories = AppCubit.get(context).categoriesModel;
 
         return ConditionalBuilder(
-          condition: state is! AppLoadingState,
+          condition: model != null && categories != null,
           builder: (context) => SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: ListView.separated(
                     itemBuilder: (context, index) =>
-                        categoryItem(categories.data.data[index]),
+                        categoryItem(categories.data.data[index], context),
                     separatorBuilder: (context, index) => SizedBox(
                       width: 10.0,
                     ),
@@ -131,37 +133,42 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget categoryItem(ProductData model) => Container(
-        width: 90.0,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Image(
-              image: NetworkImage(
-                model.image,
+  Widget categoryItem(ProductData model, context) => InkWell(
+    onTap: (){
+      navigateTo(context, SingleCategoryScreen(model.id, model.name),);
+    },
+    child: Container(
+          width: 90.0,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Image(
+                image: NetworkImage(
+                  model.image,
+                ),
+                fit: BoxFit.cover,
+                height: 90.0,
+                width: 90.0,
               ),
-              fit: BoxFit.cover,
-              height: 90.0,
-              width: 90.0,
-            ),
-            Container(
-              width: double.infinity,
-              height: 25.0,
-              color: Colors.black.withOpacity(
-                .8,
-              ),
-              child: Center(
-                child: Text(
-                  model.name,
-                  style: white12bold(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              Container(
+                width: double.infinity,
+                height: 25.0,
+                color: Colors.black.withOpacity(
+                  .8,
+                ),
+                child: Center(
+                  child: Text(
+                    model.name,
+                    style: white12bold(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      );
+  );
 
   Widget productGridItem({
     @required Products model,
@@ -196,12 +203,12 @@ class HomeScreen extends StatelessWidget {
                           FloatingActionButton(
                             onPressed: () {
                               AppCubit.get(context).changeFav(
-                                index: index,
                                 id: model.id,
                               );
                             },
+                            heroTag : '4',
                             backgroundColor:
-                                AppCubit.get(context).favourites[index]
+                                AppCubit.get(context).favourites[model.id]
                                     ? Colors.green
                                     : null,
                             mini: true,
@@ -212,11 +219,11 @@ class HomeScreen extends StatelessWidget {
                           FloatingActionButton(
                             onPressed: () {
                               AppCubit.get(context).changeCart(
-                                index: index,
                                 id: model.id,
                               );
                             },
-                            backgroundColor: AppCubit.get(context).cart[index]
+                            heroTag : '3',
+                            backgroundColor: AppCubit.get(context).cart[model.id]
                                 ? Colors.green
                                 : null,
                             mini: true,

@@ -30,6 +30,25 @@ class AppChangeCartErrorState extends AppStates
   AppChangeCartErrorState(this.error);
 }
 
+class AppCartLoadingState extends AppStates {}
+
+class AppCartSuccessState extends AppStates {}
+
+class AppCartErrorState extends AppStates
+{
+  final String error;
+
+  AppCartErrorState(this.error);
+}
+
+class AppUpdateCartLoadingState extends AppStates {}
+
+class AppUpdateCartErrorState extends AppStates
+{
+  final String error;
+
+  AppUpdateCartErrorState(this.error);
+}
 
 class AppCategoriesLoadingState extends AppStates {}
 

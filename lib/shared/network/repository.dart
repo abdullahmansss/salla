@@ -16,6 +16,15 @@ abstract class Repository {
     @required String token,
   });
 
+  Future<Response> getCartData({
+    @required String token,
+  });
+
+  Future<Response> getSingleCategory({
+    @required String token,
+    @required int id,
+  });
+
   Future<Response> getCategories();
 
   Future<Response> addOrRemoveFavourite({
@@ -26,6 +35,12 @@ abstract class Repository {
   Future<Response> addOrRemoveCart({
     @required String token,
     @required int id,
+  });
+
+  Future<Response> updateCart({
+    @required String token,
+    @required int id,
+    @required int quantity,
   });
 
 // Future<Either<String, UserModel>> userLogin({
@@ -98,6 +113,22 @@ class RepoImplementation extends Repository {
   }
 
   @override
+  Future<Response> updateCart({
+    String token,
+    int id,
+    int quantity,
+  }) async {
+    return await dioHelper.putData(
+      url: '$ADD_CART/$id',
+      token: token,
+      data:
+      {
+        'quantity':quantity,
+      },
+    );
+  }
+
+  @override
   Future<Response> getHomeData({
     String token,
   }) async
@@ -105,6 +136,32 @@ class RepoImplementation extends Repository {
     return await dioHelper.getData(
       url: HOME_DATA,
       token: token,
+    );
+  }
+
+  @override
+  Future<Response> getCartData({
+    String token,
+  }) async
+  {
+    return await dioHelper.getData(
+      url: ADD_CART,
+      token: token,
+    );
+  }
+
+  @override
+  Future<Response> getSingleCategory({
+    String token,
+    int id,
+  }) async
+  {
+    return await dioHelper.getData(
+      url: GET_PRODUCTS,
+      token: token,
+      query: {
+        'category_id':id,
+      },
     );
   }
 

@@ -70,7 +70,9 @@ Widget defaultButton({
       width: double.infinity,
       decoration: BoxDecoration(
         color: defaultColor,
-        borderRadius: BorderRadius.circular(3.0,),
+        borderRadius: BorderRadius.circular(
+          3.0,
+        ),
       ),
       child: MaterialButton(
         onPressed: function,
@@ -128,8 +130,9 @@ void navigateTo(context, widget) => Navigator.push(
     );
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(
-      builder: (context) => widget,
-    ),
-    (Route<dynamic> route) => false);
+      context,
+      MaterialPageRoute(
+        builder: (context) => widget,
+      ),
+      (Route<dynamic> route) => false,
+    );
